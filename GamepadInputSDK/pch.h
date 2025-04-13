@@ -8,10 +8,10 @@
 #define PCH_H
 
 #ifdef _WIN32
-    #ifdef GAMEPADSDK_EXPORTS
-        #define GAMEPADSDK_API __declspec(dllexport)
+    #ifdef GAMEPAD_EXPORTS
+        #define GAMEPAD_API __declspec(dllexport)
     #else
-        #define GAMEPADSDK_API __declspec(dllimport)
+        #define GAMEPAD_API __declspec(dllimport)
     #endif
 #else
     #define GAMEPADSDK_API

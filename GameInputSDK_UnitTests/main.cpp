@@ -1,16 +1,11 @@
 #include "main.h"
-#include "HelloWorld.h"
+#include "GamepadInputManager.h"
+
 #include <iostream>
 #include <conio.h>  
 
 int main() {
-    using namespace gamepadmanager;
-
-    HelloWorld hw;
-
-    std::cout << "Class says: " << hw.getHelloMessage() << std::endl;
-    std::cout << "Function says: " << say_hello() << std::endl;
-
+	int gamepadid =-1;
     std::cout << "Press 1 to init Xbox controller." << std::endl;
     std::cout << "Press 2 to create Xbox controller." << std::endl;
     std::cout << "Press 3 to close Xbox controller." << std::endl;
@@ -23,23 +18,25 @@ int main() {
             switch (ch) {
             case '1':
                 std::cout << "Initializing Xbox Controller..." << std::endl;
-                hw.initXboxController();
+                gamepadmanager::initialize();
+
                 break;
 
             case '2':
                 std::cout << "Creating Xbox Controller..." << std::endl;
-                hw.createXboxController();
+                gamepadmanager::create_xbox_controller(gamepadid);
+				std::cout << "Xbox Controller created with ID: " << gamepadid << std::endl;
                 break;
 
             case '3':
                 std::cout << "Closing Xbox Controller..." << std::endl;
-                hw.closeXboxController();
+                gamepadmanager::release();
                 break;
 
             case 'D':
                 while (true) {
                     std::cout << "D pad left" << std::endl;
-                    hw.xbox_down_dpad_controller();
+                gamepadmanager::xbox_down_dpad_controller(gamepadid);
 
 
 					std::cout << "Press any key to stop D pad left simulation..." << std::endl;
