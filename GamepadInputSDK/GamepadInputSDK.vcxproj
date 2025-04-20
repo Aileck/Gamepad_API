@@ -151,8 +151,10 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="Gamepad.h" />
+    <ClInclude Include="GamepadAPI.h" />
     <ClInclude Include="GamepadInputManager.h" />
     <ClInclude Include="GamepadResult.h" />
+    <ClInclude Include="GemepadSharedAction.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Xbox.h" />
@@ -160,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Gamepad.cpp" />
+    <ClCompile Include="GamepadAPI.cpp" />
     <ClCompile Include="GamepadInputManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

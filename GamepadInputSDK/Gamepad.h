@@ -12,6 +12,7 @@ namespace gamepadmanager {
 
 			virtual void create() = 0;
             virtual void release() = 0;
+			virtual void cleanInput() = 0;
 
 		private:
 			std::string gamepadName;
