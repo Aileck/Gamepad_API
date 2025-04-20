@@ -1,5 +1,5 @@
 #pragma once
 
-namespace gamepadmanager {
+namespace gamepadapi {
     constexpr int MAX_GAMEPADS = 8;
 } 

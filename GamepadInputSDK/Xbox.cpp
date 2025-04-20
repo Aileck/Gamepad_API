@@ -5,25 +5,25 @@
 
 #include <string>
 
-gamepadmanager::Xbox::Xbox(PVIGEM_TARGET id, ULONG index) : Gamepad("", id, index)
+gamepadapi::Xbox::Xbox(PVIGEM_TARGET id, ULONG index) : Gamepad("", id, index)
 {
 	ZeroMemory(&report, sizeof(report));
 }
 
-gamepadmanager::Xbox::~Xbox()
+gamepadapi::Xbox::~Xbox()
 {
 	release();
 }
 
-void gamepadmanager::Xbox::create()
+void gamepadapi::Xbox::create()
 {
 }
 
-void gamepadmanager::Xbox::release()
+void gamepadapi::Xbox::release()
 {
 }
 
-XUSB_REPORT gamepadmanager::Xbox::handleInputButton(_XUSB_BUTTON button, BUTTON_STATE state)
+XUSB_REPORT gamepadapi::Xbox::handleInputButton(_XUSB_BUTTON button, BUTTON_STATE state)
 {
 	if (state == BUTTON_STATE::PRESSED)
 	{
@@ -36,7 +36,7 @@ XUSB_REPORT gamepadmanager::Xbox::handleInputButton(_XUSB_BUTTON button, BUTTON_
 	return report;
 }
 
-XUSB_REPORT gamepadmanager::Xbox::handleInputStick(DIRECTION direction, SHORT x, SHORT y)
+XUSB_REPORT gamepadapi::Xbox::handleInputStick(DIRECTION direction, SHORT x, SHORT y)
 {
 	if (direction == DIRECTION::LEFT)
 	{
@@ -52,7 +52,7 @@ XUSB_REPORT gamepadmanager::Xbox::handleInputStick(DIRECTION direction, SHORT x,
 	return report;
 }
 
-XUSB_REPORT gamepadmanager::Xbox::HandleInputTrigger(DIRECTION direction, BYTE val)
+XUSB_REPORT gamepadapi::Xbox::HandleInputTrigger(DIRECTION direction, BYTE val)
 {
 	if (direction == DIRECTION::LEFT)
 	{
@@ -66,7 +66,7 @@ XUSB_REPORT gamepadmanager::Xbox::HandleInputTrigger(DIRECTION direction, BYTE v
 	return report;
 }
 
-void gamepadmanager::Xbox::cleanInput()
+void gamepadapi::Xbox::cleanInput()
 {
 	ZeroMemory(&report, sizeof(report));
 }

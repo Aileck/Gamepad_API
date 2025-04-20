@@ -1,5 +1,5 @@
 #pragma once
-namespace gamepadmanager {
+namespace gamepadapi {
     enum class BUTTON_STATE {
         PRESSED,
         RELEASED

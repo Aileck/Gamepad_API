@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Gamepad.h"
 
-namespace gamepadmanager {
+namespace gamepadapi {
     Gamepad::Gamepad(const std::string& name, PVIGEM_TARGET id, ULONG index) {
       if (name == "") {
         gamepadName = "Unknown Gamepad";
@@ -16,4 +16,4 @@ namespace gamepadmanager {
 
 	Gamepad::~Gamepad() = default;
 
-} // namespace gamepadmanager
+} // namespace gamepadapi

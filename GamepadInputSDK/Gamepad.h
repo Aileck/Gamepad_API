@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "GamepadResult.h"
 
-namespace gamepadmanager {
+namespace gamepadapi {
 	class GAMEPAD_API Gamepad {
 		public:
 			Gamepad(const std::string& name, PVIGEM_TARGET id, ULONG index);

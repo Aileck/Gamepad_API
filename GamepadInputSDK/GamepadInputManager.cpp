@@ -9,9 +9,9 @@
 #include <chrono>
 #include <memory>
 
-namespace gamepadmanager
+namespace gamepadapi
 {
-	GamepadInputManager& gamepadmanager::GamepadInputManager::getInstance()
+	GamepadInputManager& gamepadapi::GamepadInputManager::getInstance()
 	{
 		static GamepadInputManager instance;
 		return instance;
@@ -23,12 +23,12 @@ namespace gamepadmanager
 		session = 0;
 	}
 
-	gamepadmanager::GamepadInputManager::~GamepadInputManager()
+	gamepadapi::GamepadInputManager::~GamepadInputManager()
 	{
 		cleanUp();
 	}
 
-	Gamepad_Result gamepadmanager::GamepadInputManager::initializeManager()
+	Gamepad_Result gamepadapi::GamepadInputManager::initializeManager()
 	{		
 		// Allocate a VIGEM client
 		client = vigem_alloc();
@@ -104,7 +104,7 @@ namespace gamepadmanager
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	Gamepad_Result gamepadmanager::GamepadInputManager::cleanUp()
+	Gamepad_Result gamepadapi::GamepadInputManager::cleanUp()
 	{
 		vigem_disconnect(client);
 		vigem_free(client);

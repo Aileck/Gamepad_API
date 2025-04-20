@@ -7,7 +7,7 @@
 #include <memory>
 
 
-namespace gamepadmanager
+namespace gamepadapi
 {
     class Gamepad;
     enum class BUTTON_STATE;

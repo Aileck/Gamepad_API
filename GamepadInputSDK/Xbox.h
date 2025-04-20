@@ -4,7 +4,7 @@
 #include "GamepadResult.h"
 #include <ViGEm/Client.h>
 
-namespace gamepadmanager {
+namespace gamepadapi {
     enum class BUTTON_STATE;
     enum class DIRECTION;
 
@@ -26,4 +26,4 @@ namespace gamepadmanager {
         // To save controller state for xbox
         XUSB_REPORT report;
     };
-}; // namespace gamepadmanager
+}; // namespace gamepadapi

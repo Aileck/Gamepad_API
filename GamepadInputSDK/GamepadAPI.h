@@ -4,7 +4,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-	namespace gamepadmanager {
+	namespace gamepadapi {
 
 #endif
 
