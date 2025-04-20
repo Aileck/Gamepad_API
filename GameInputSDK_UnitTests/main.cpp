@@ -1,9 +1,10 @@
 ﻿#include "main.h"
-#include "GamepadInputManager.h"
+#include "GamepadAPI.h"
 #include <iostream>
 #include <conio.h>
 #include <string>
 #include <unordered_map>
+#include <windows.h>
 
 // Display keyboard mapping help
 void showControlHelp() {
@@ -13,217 +14,103 @@ void showControlHelp() {
     std::cout << "  2 - Create Xbox controller" << std::endl;
     std::cout << "  3 - Close Xbox controller" << std::endl;
     std::cout << "Button Mapping:" << std::endl;
-    std::cout << "  Q - Xbox A button" << std::endl;
-    std::cout << "  W - Xbox B button" << std::endl;
-    std::cout << "  E - Xbox X button" << std::endl;
+    std::cout << "  Q - D-pad Up" << std::endl;
+    std::cout << "  W - D-pad Down" << std::endl;
+    std::cout << "  E - Xbox A button" << std::endl;
     std::cout << "  R - Xbox Y button" << std::endl;
-    std::cout << "  T - Start button" << std::endl;
-    std::cout << "  Y - Back button" << std::endl;
-    std::cout << "  F - Left Shoulder button" << std::endl;
-    std::cout << "  G - Right Shoulder button" << std::endl;
-    std::cout << "  V - Left Thumb button" << std::endl;
-    std::cout << "  B - Right Thumb button" << std::endl;
-    std::cout << "D-pad Mapping:" << std::endl;
-    std::cout << "  I - D-pad Up" << std::endl;
-    std::cout << "  K - D-pad Down" << std::endl;
-    std::cout << "  J - D-pad Left" << std::endl;
-    std::cout << "  L - D-pad Right" << std::endl;
-    std::cout << "Analog Controls:" << std::endl;
-    std::cout << "  W, A, S, D - Left Stick (Up, Left, Down, Right)" << std::endl;
-    std::cout << "  8, 4, 5, 6 - Right Stick (Up, Left, Down, Right)" << std::endl;
-    std::cout << "  Z - Left Trigger" << std::endl;
-    std::cout << "  X - Right Trigger" << std::endl;
+    std::cout << "  T - Guide button" << std::endl;
+    std::cout << "  Y - Left Shoulder (LB)" << std::endl;
+    std::cout << "  U - Right Shoulder (RB)" << std::endl;
+    std::cout << "  I - Left Trigger (half)" << std::endl;
+    std::cout << "  O - Analog stick (Up-Left)" << std::endl;
     std::cout << "Other Controls:" << std::endl;
-    std::cout << "  Enter - Clear all button states" << std::endl;
     std::cout << "  H - Display this help menu" << std::endl;
     std::cout << "  Esc - Exit program" << std::endl;
     std::cout << "===============================" << std::endl;
 }
 
+std::unordered_map<char, bool> keyStates;
+
+bool toggleKeyState(char key) {
+    keyStates[key] = !keyStates[key];
+    return keyStates[key];
+}
+
 int main() {
     int gamepadid = -1;
-    
-    // Define standard values for sticks and triggers
-    const int STICK_MAX = 32767;  // Maximum value for SHORT
-    const int TRIGGER_MAX = 255;  // Maximum value for BYTE
-    
+
+    const int STICK_MAX = 32767;
+    const int TRIGGER_HALF = 128; // Half of the trigger max value
+
     showControlHelp();
-    
+
     while (true) {
         if (_kbhit()) {
             char ch = _getch();
-            
-            // Handle special keys (Esc)
+
             if (ch == 27) { // Esc key
                 std::cout << "Exiting program..." << std::endl;
                 gamepadmanager::release();
                 break;
             }
-            
+
+            bool keydown = toggleKeyState(ch);
+
             switch (ch) {
-                // Initialization functions
-                case '1':
-                    std::cout << "Initializing Xbox controller..." << std::endl;
-                    gamepadmanager::initialize();
-                    break;
-                case '2':
-                    std::cout << "Creating Xbox controller..." << std::endl;
-                    gamepadmanager::create_xbox_controller(gamepadid);
-                    std::cout << "Xbox controller created with ID: " << gamepadid << std::endl;
-                    break;
-                case '3':
-                    std::cout << "Closing Xbox controller..." << std::endl;
-                    gamepadmanager::release();
-                    break;
-                    
-                // Button mapping - using a different layout to avoid conflicts
-                case 'q':
-                case 'Q':
-                    std::cout << "Pressed: Xbox A button" << std::endl;
-                    gamepadmanager::xbox_press_a(gamepadid);
-                    break;
-  
-                case 'e':
-                case 'E':
-                    std::cout << "Pressed: Xbox X button" << std::endl;
-                    gamepadmanager::xbox_press_x(gamepadid);
-                    break;
-                case 'r':
-                case 'R':
-                    std::cout << "Pressed: Xbox Y button" << std::endl;
-                    gamepadmanager::xbox_press_y(gamepadid);
-                    break;
-                case 't':
-                case 'T':
-                    std::cout << "Pressed: Start button" << std::endl;
-                    gamepadmanager::xbox_press_start(gamepadid);
-                    break;
-                case 'y':
-                case 'Y':
-                    std::cout << "Pressed: Back button" << std::endl;
-                    gamepadmanager::xbox_press_back(gamepadid);
-                    break;
-                
-                // D-pad mapping (using IJKL)
-                case 'i':
-                case 'I':
-                    std::cout << "Pressed: D-pad Up" << std::endl;
-                    gamepadmanager::xbox_press_dpad_up(gamepadid);
-                    break;
-                case 'k':
-                case 'K':
-                    std::cout << "Pressed: D-pad Down" << std::endl;
-                    gamepadmanager::xbox_press_dpad_down(gamepadid);
-                    break;
-                case 'j':
-                case 'J':
-                    std::cout << "Pressed: D-pad Left" << std::endl;
-                    gamepadmanager::xbox_press_dpad_left(gamepadid);
-                    break;
-                case 'l':
-                case 'L':
-                    std::cout << "Pressed: D-pad Right" << std::endl;
-                    gamepadmanager::xbox_press_dpad_right(gamepadid);
-                    break;
-                
-                // Shoulder buttons
-                case 'f':
-                case 'F':
-                    std::cout << "Pressed: Left Shoulder" << std::endl;
-                    gamepadmanager::xbox_press_left_shoulder(gamepadid);
-                    break;
-                case 'g':
-                case 'G':
-                    std::cout << "Pressed: Right Shoulder" << std::endl;
-                    gamepadmanager::xbox_press_right_shoulder(gamepadid);
-                    break;
-                
-                // Thumb stick buttons
-                case 'v':
-                case 'V':
-                    std::cout << "Pressed: Left Thumb" << std::endl;
-                    gamepadmanager::xbox_press_left_thumb(gamepadid);
-                    break;
-                case 'b':
-                case 'B':
-                    std::cout << "Pressed: Right Thumb" << std::endl;
-                    gamepadmanager::xbox_press_right_thumb(gamepadid);
-                    break;
-                
-                // Left stick control (WASD)
-                case 'w':
-                case 'W':
-                    std::cout << "Left Stick: Up" << std::endl;
-                    gamepadmanager::xbox_move_stick_left(gamepadid, 0, STICK_MAX);
-                    break;
-                case 'a':
-                case 'A':
-                    std::cout << "Left Stick: Left" << std::endl;
-                    gamepadmanager::xbox_move_stick_left(gamepadid, -STICK_MAX, 0);
-                    break;
-                case 's':
-                case 'S':
-                    std::cout << "Left Stick: Down" << std::endl;
-                    gamepadmanager::xbox_move_stick_left(gamepadid, 0, -STICK_MAX);
-                    break;
-                case 'd':
-                case 'D':
-                    std::cout << "Left Stick: Right" << std::endl;
-                    gamepadmanager::xbox_move_stick_left(gamepadid, STICK_MAX, 0);
-                    break;
-                
-                // Right stick control (numpad 8456)
-                case '8':
-                    std::cout << "Right Stick: Up" << std::endl;
-                    gamepadmanager::xbox_move_stick_right(gamepadid, 0, STICK_MAX);
-                    break;
-                case '4':
-                    std::cout << "Right Stick: Left" << std::endl;
-                    gamepadmanager::xbox_move_stick_right(gamepadid, -STICK_MAX, 0);
-                    break;
-                case '5':
-                    std::cout << "Right Stick: Down" << std::endl;
-                    gamepadmanager::xbox_move_stick_right(gamepadid, 0, -STICK_MAX);
-                    break;
-                case '6':
-                    std::cout << "Right Stick: Right" << std::endl;
-                    gamepadmanager::xbox_move_stick_right(gamepadid, STICK_MAX, 0);
-                    break;
-                
-                // Trigger controls
-                case 'z':
-                case 'Z':
-                    std::cout << "Pressed: Left Trigger" << std::endl;
-                    gamepadmanager::xbox_press_trigger_left(gamepadid, TRIGGER_MAX);
-                    break;
-                case 'x':
-                case 'X':
-                    std::cout << "Pressed: Right Trigger" << std::endl;
-                    gamepadmanager::xbox_press_trigger_right(gamepadid, TRIGGER_MAX);
-                    break;
-                
-                // Clear state (Enter key)
-                case 13: // Enter key
-                    std::cout << "Clearing all button states..." << std::endl;
-                    gamepadmanager::xbox_release_button(gamepadid);
-                    gamepadmanager::xbox_move_stick_left(gamepadid, 0, 0);
-                    gamepadmanager::xbox_move_stick_right(gamepadid, 0, 0);
-                    gamepadmanager::xbox_press_trigger_left(gamepadid, 0);
-                    gamepadmanager::xbox_press_trigger_right(gamepadid, 0);
-                    break;
-                
-                // Display help
-                case 'h':
-                case 'H':
-                    showControlHelp();
-                    break;
-                
-                default:
-                    // Ignore other keys
-                    break;
+            case '1':
+                std::cout << "Initializing Xbox controller..." << std::endl;
+                gamepadmanager::initialize();
+                break;
+            case '2':
+                std::cout << "Creating Xbox controller..." << std::endl;
+                gamepadmanager::create_xbox_controller(gamepadid);
+                std::cout << "Xbox controller created with ID: " << gamepadid << std::endl;
+                break;
+            case '3':
+                std::cout << "Closing Xbox controller..." << std::endl;
+                gamepadmanager::release();
+                break;
+            case 'q': // D-pad Up
+                std::cout << (keydown ? "Pressed: D-pad Up" : "Released: D-pad Up") << std::endl;
+                gamepadmanager::xbox_input_up(gamepadid, keydown);
+                break;
+            case 'w': // D-pad Down
+                std::cout << (keydown ? "Pressed: D-pad Down" : "Released: D-pad Down") << std::endl;
+                gamepadmanager::xbox_input_down(gamepadid, keydown);
+                break;
+            case 'e': // Button A
+                std::cout << (keydown ? "Pressed: Xbox A button" : "Released: Xbox A button") << std::endl;
+                gamepadmanager::xbox_input_a(gamepadid, keydown);
+                break;
+            case 'r': // Button Y
+                std::cout << (keydown ? "Pressed: Xbox Y button" : "Released: Xbox Y button") << std::endl;
+                gamepadmanager::xbox_input_y(gamepadid, keydown);
+                break;
+            case 't': // Guide button
+                std::cout << (keydown ? "Pressed: Guide button" : "Released: Guide button") << std::endl;
+                gamepadmanager::xbox_input_guide(gamepadid, keydown);
+                break;
+            case 'y': // Left Shoulder (LB)
+                std::cout << (keydown ? "Pressed: Left Shoulder" : "Released: Left Shoulder") << std::endl;
+                gamepadmanager::xbox_input_lb(gamepadid, keydown);
+                break;
+            case 'u': // Right Shoulder (RB)
+                std::cout << (keydown ? "Pressed: Right Shoulder" : "Released: Right Shoulder") << std::endl;
+                gamepadmanager::xbox_input_rb(gamepadid, keydown);
+                break;
+            case 'i': // Left Trigger (half)
+                std::cout << "Left Trigger set to half value: " << TRIGGER_HALF << std::endl;
+                gamepadmanager::xbox_input_lt(gamepadid, TRIGGER_HALF);
+                break;
+            case 'o': // Analog stick up-left
+                std::cout << "Analog stick moved to Up-Left" << std::endl;
+                gamepadmanager::xbox_input_left_stick(gamepadid, -STICK_MAX, -STICK_MAX);
+                break;
+            default:
+                break;
             }
         }
     }
-    
+
     return 0;
 }

@@ -154,7 +154,7 @@
     <ClInclude Include="GamepadAPI.h" />
     <ClInclude Include="GamepadInputManager.h" />
     <ClInclude Include="GamepadResult.h" />
-    <ClInclude Include="GemepadSharedAction.h" />
+    <ClInclude Include="GamepadSharedAction.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Xbox.h" />

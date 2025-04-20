@@ -23,12 +23,6 @@ namespace gamepadmanager {
       private:
         void cleanInput();
 
-		// VIGEM's internal ID
-        PVIGEM_TARGET padID;
-
-        // User index defined by bus
-        ULONG gamepadIndex;
-
         // To save controller state for xbox
         XUSB_REPORT report;
     };

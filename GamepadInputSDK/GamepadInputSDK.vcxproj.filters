@@ -36,7 +36,7 @@
     <ClInclude Include="Xbox.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="GemepadSharedAction.h">
+    <ClInclude Include="GamepadSharedAction.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="GamepadAPI.h">

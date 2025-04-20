@@ -1,145 +1,120 @@
 #include "pch.h"
 #include "GamepadAPI.h"
 #include "GamepadInputManager.h"
-
-using namespace gamepadmanager;
+#include "GamepadSharedAction.h"
 
 extern "C" {
 
-	GAMEPAD_API Gamepad_Result initialize()
+	// System
+	GAMEPAD_API Gamepad_Result gamepadmanager::initialize()
 	{
 		return gamepadmanager::GamepadInputManager::getInstance().initializeManager();
 	}
 
-	GAMEPAD_API Gamepad_Result create_xbox_controller(int& id)
-	{
-		return gamepadmanager::GamepadInputManager::getInstance().createXboxController(&id);
-	}
-
-	GAMEPAD_API Gamepad_Result release()
+	GAMEPAD_API Gamepad_Result gamepadmanager::release()
 	{
 		return gamepadmanager::GamepadInputManager::getInstance().cleanUp();
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_a(int id)
+	// XBOX
+
+	GAMEPAD_API Gamepad_Result gamepadmanager::create_xbox_controller(int& id)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_A);
+		return gamepadmanager::GamepadInputManager::getInstance().createGamepad(&id, GAMEPAD_TYPE::GAMEPAD_XBOX);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_b(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_up(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_B);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_DPAD_UP, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_x(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_down(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_X);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_DPAD_DOWN, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_y(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_left(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_Y);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_DPAD_LEFT, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_start(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_right(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_START);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_DPAD_RIGHT, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_back(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_a(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_BACK);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_A, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_dpad_up(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_b(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_DPAD_UP);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_B, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_dpad_down(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_x(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_DPAD_DOWN);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_X, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_dpad_left(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_y(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_DPAD_LEFT);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_Y, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_dpad_right(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_left_stick(int id, SHORT x, SHORT y)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_DPAD_RIGHT);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputStick(id, DIRECTION::LEFT, x, y);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_left_shoulder(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_right_stick(int id, SHORT x, SHORT y)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_LEFT_SHOULDER);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputStick(id, DIRECTION::RIGHT, x, y);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_right_shoulder(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_lb(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_RIGHT_SHOULDER);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_LEFT_SHOULDER, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_left_thumb(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_rb(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_LEFT_THUMB);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_RIGHT_SHOULDER, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_press_right_thumb(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_lt(int id, int val)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressButton(id, XUSB_GAMEPAD_RIGHT_THUMB);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputTrigger(id, DIRECTION::LEFT, val);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_release_button(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_rt(int id, int val)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxReleaseButton(id);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputTrigger(id, DIRECTION::RIGHT, val);
 	}
 
-	// Xbox controller thumb press simulation
-
-	GAMEPAD_API Gamepad_Result xbox_move_stick_left(int id, int x, int y)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_left_analog_button(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxMoveThumb(
-			id, true, static_cast<SHORT>(x), static_cast<SHORT>(y));
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_LEFT_THUMB, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_move_stick_right(int id, int x, int y)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_right_analog_button(int id, bool keydown)
 	{
-
-		return gamepadmanager::GamepadInputManager::getInstance().xboxMoveThumb(
-			id, false, static_cast<SHORT>(x), static_cast<SHORT>(y));
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_RIGHT_THUMB, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_release_stick_left(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_start(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxReleaseThumb(id, true);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_START, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-	GAMEPAD_API Gamepad_Result xbox_release_stick_right(int id)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_back(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxReleaseThumb(id, false);
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_BACK, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
 
-
-	// Xbox controller trigger press simulation
-
-	GAMEPAD_API Gamepad_Result xbox_press_trigger_left(int id, int val)
+	GAMEPAD_API Gamepad_Result gamepadmanager::xbox_input_guide(int id, bool keydown)
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressTrigger(id, true, static_cast<BYTE>(val));
+		return gamepadmanager::GamepadInputManager::getInstance().xboxInputButton(id, XUSB_GAMEPAD_GUIDE, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
-
-	GAMEPAD_API Gamepad_Result xbox_press_trigger_right(int id, int val)
-	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxPressTrigger(id, false, static_cast<BYTE>(val));
-	}
-
-	GAMEPAD_API Gamepad_Result xbox_release_trigger_left(int id)
-	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxReleaseTrigger(id, true);
-	}
-
-	GAMEPAD_API Gamepad_Result xbox_release_trigger_right(int id)
-	{
-		return gamepadmanager::GamepadInputManager::getInstance().xboxReleaseTrigger(id, false);
-	}
+}

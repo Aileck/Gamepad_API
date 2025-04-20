@@ -1,15 +1,12 @@
 #include "pch.h"
 #include "Xbox.h"
 #include "Gamepad.h"
-#include "GemepadSharedAction.h"
+#include "GamepadSharedAction.h"
 
 #include <string>
 
-gamepadmanager::Xbox::Xbox(PVIGEM_TARGET id, ULONG index) : Gamepad("")
+gamepadmanager::Xbox::Xbox(PVIGEM_TARGET id, ULONG index) : Gamepad("", id, index)
 {
-	padID = id;
-	gamepadIndex = index;
-
 	ZeroMemory(&report, sizeof(report));
 }
 
