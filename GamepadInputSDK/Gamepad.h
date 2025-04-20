@@ -1,17 +1,21 @@
 #pragma once
 #include <string>
 
-class Gamepad
-{
-public:
-	Gamepad();
-	virtual ~Gamepad();
+#include "globals.h"
+#include "GamepadResult.h"
 
-	virtual void initialize();
-	virtual void release();
+namespace gamepadmanager {
+	class GAMEPAD_API Gamepad {
+		public:
+			Gamepad(const std::string& name);
+			virtual ~Gamepad();
 
-private:
-	std::string gamepadName;
-	int sessionID;
+			virtual void create() = 0;
+            virtual void release() = 0;
+
+		private:
+			std::string gamepadName;
+			std::string gamepadCustomName;
+		};
 };
 

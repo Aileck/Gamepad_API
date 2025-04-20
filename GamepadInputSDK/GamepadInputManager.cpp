@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "GamepadInputManager.h"
+#include "Xbox.h"
+#include "Gamepad.h"
 
 #include <iostream>
 #include <Xinput.h>
 #include <thread>
 #include <chrono>
+#include <memory>
 
 namespace gamepadmanager
 {
@@ -20,11 +23,11 @@ namespace gamepadmanager
 
 	gamepadmanager::GamepadInputManager::~GamepadInputManager()
 	{
-		release();
+		cleanUp();
 	}
 
-	const Gamepad_Result gamepadmanager::GamepadInputManager::initializeManager()
-	{
+	Gamepad_Result gamepadmanager::GamepadInputManager::initializeManager()
+	{		
 		// Allocate a VIGEM client
 		client = vigem_alloc();
 		if (client == nullptr) {
@@ -42,6 +45,9 @@ namespace gamepadmanager
 		// Reserve memory for the gamepad targets
 		pads.reserve(MAX_GAMEPADS);
 
+		gamepads.reserve(MAX_GAMEPADS);
+
+
 		for (size_t i = 0; i < MAX_GAMEPADS; ++i) {
 			pads.push_back(nullptr);
 		}
@@ -49,7 +55,7 @@ namespace gamepadmanager
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result gamepadmanager::GamepadInputManager::createXboxController(int* id)
+	Gamepad_Result gamepadmanager::GamepadInputManager::createXboxController(int* id)
 	{
 		// Get first not null target from pads list
 		for (int i = 0; i < MAX_GAMEPADS; ++i) {
@@ -74,6 +80,8 @@ namespace gamepadmanager
 				*id = i;
 				std::cout << "Virtual controller assigned to user index: " << index << std::endl;
 
+				incrementSession();
+
 				return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 			}
 		}
@@ -81,7 +89,67 @@ namespace gamepadmanager
 		return Gamepad_Result{ 0, VIGEM_ERROR_NO_FREE_SLOT };
 	}
 
-	const Gamepad_Result gamepadmanager::GamepadInputManager::releaseManager()
+	Gamepad_Result GamepadInputManager::createGamepad(int* id, GAMEPAD_TYPE type)
+	{
+		Gamepad_Result result = Gamepad_Result{ 0, VIGEM_ERROR_NOT_SUPPORTED };
+
+		if (gamepads.size() >= MAX_GAMEPADS)
+		{
+			return Gamepad_Result{ 0, VIGEM_ERROR_NO_FREE_SLOT };
+		}
+
+		if (type == GAMEPAD_TYPE::GAMEPAD_XBOX)
+		{
+			result = createXboxGamepad(id);
+		}
+		else if (type == GAMEPAD_TYPE::GAMEPAD_PS4)
+		{
+			result = Gamepad_Result{ 0, VIGEM_ERROR_NOT_SUPPORTED };
+		}
+
+		// Check if the gamepad was created successfully
+		if (result.STATUS == 1)
+		{
+			incrementSession();
+		}
+		else
+		{
+			return result;
+		}
+	}
+
+	Gamepad_Result GamepadInputManager::createXboxGamepad(int* id)
+	{
+		PVIGEM_TARGET pad = vigem_target_x360_alloc();
+
+		const auto pir = vigem_target_add(client, pad);
+		if (!VIGEM_SUCCESS(pir)) {
+			std::cerr << "Target plugin failed with error code: 0x" << std::hex << pir << std::endl;
+			return Gamepad_Result{ 0, VIGEM_ERROR_BUS_NOT_FOUND };
+		}
+
+		XINPUT_STATE state;
+		XInputGetState(0, &state);
+
+		vigem_target_x360_update(client, pad, *reinterpret_cast<XUSB_REPORT*>(&state.Gamepad));
+
+		ULONG index;
+		vigem_target_x360_get_user_index(client, pad, &index);
+		std::cout << "Virtual controller assigned to user index: " << index << std::endl;
+
+		/*gamepads[session] = 
+			std::static_pointer_cast<gamepadmanager::Gamepad>(std::make_shared<Xbox>(pir, index));
+		*/
+
+		gamepads[session] = std::make_shared<Xbox>(pad, index);
+
+		*id = session;
+		std::cout << "Virtual controller assigned to user index: " << index << std::endl;
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result gamepadmanager::GamepadInputManager::cleanUp()
 	{
 		for (size_t i = 0; i < MAX_GAMEPADS; i++)
 		{
@@ -95,19 +163,23 @@ namespace gamepadmanager
 		vigem_disconnect(client);
 		vigem_free(client);
 
+		resetSession();
+
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxPressButton(int id, _XUSB_BUTTON button)
+	Gamepad_Result GamepadInputManager::xboxPressButton(int id, _XUSB_BUTTON button)
 	{
 		XUSB_REPORT report;
 		ZeroMemory(&report, sizeof(report));
-		report.wButtons = button;
+                report.wButtons = button;
+                //report.wButtons |= XUSB_GAMEPAD_DPAD_UP;
+        std::cout << "Button pressed: " << button << std::endl;
 		vigem_target_x360_update(client, pads[id], report);
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxReleaseButton(int id)
+	Gamepad_Result GamepadInputManager::xboxReleaseButton(int id)
 	{
 		XUSB_REPORT report;
 		ZeroMemory(&report, sizeof(report));
@@ -116,7 +188,7 @@ namespace gamepadmanager
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxMoveThumb(int id, bool leftStick, SHORT x, SHORT y)
+	Gamepad_Result GamepadInputManager::xboxMoveThumb(int id, bool leftStick, SHORT x, SHORT y)
 	{
 		const std::string stick = (leftStick) ? "left " : "right ";
 		std::cout << "Moving " << stick << "with values " << x << "," << y << std::endl;
@@ -138,7 +210,7 @@ namespace gamepadmanager
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxReleaseThumb(int id, bool leftStick)
+	Gamepad_Result GamepadInputManager::xboxReleaseThumb(int id, bool leftStick)
 	{
 		XUSB_REPORT report;
 		ZeroMemory(&report, sizeof(report));
@@ -153,12 +225,11 @@ namespace gamepadmanager
 			report.sThumbRY = 0;
 		}
 
-
 		vigem_target_x360_update(client, pads[id], report);
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxPressTrigger(int id, bool leftTrigger, BYTE val)
+	Gamepad_Result GamepadInputManager::xboxPressTrigger(int id, bool leftTrigger, BYTE val)
 	{
 		XUSB_REPORT report;
 		ZeroMemory(&report, sizeof(report));
@@ -176,7 +247,7 @@ namespace gamepadmanager
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	const Gamepad_Result GamepadInputManager::xboxReleaseTrigger(int id, bool leftTrigger)
+	Gamepad_Result GamepadInputManager::xboxReleaseTrigger(int id, bool leftTrigger)
 	{
 		XUSB_REPORT report;
 		ZeroMemory(&report, sizeof(report));
@@ -185,7 +256,7 @@ namespace gamepadmanager
 		{
 			report.bLeftTrigger = 0;
 		}
-		else if (leftTrigger)
+		else
 		{
 			report.bRightTrigger = 0;
 		}
@@ -210,7 +281,7 @@ extern "C" {
 
 	GAMEPAD_API Gamepad_Result release()
 	{
-		return gamepadmanager::GamepadInputManager::getInstance().releaseManager();
+		return gamepadmanager::GamepadInputManager::getInstance().cleanUp();
 	}
 
 	GAMEPAD_API Gamepad_Result xbox_press_a(int id)
