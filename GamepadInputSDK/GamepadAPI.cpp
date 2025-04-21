@@ -243,9 +243,4 @@ extern "C" {
 	{
 		return gamepadapi::GamepadInputManager::getInstance().ds4InputSpecial(id, DS4_SPECIAL_BUTTON_PS, keydown ? BUTTON_STATE::PRESSED : BUTTON_STATE::RELEASED);
 	}
-
-
-
-
-
 }

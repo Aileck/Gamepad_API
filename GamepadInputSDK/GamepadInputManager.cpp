@@ -66,7 +66,7 @@ namespace gamepadapi
 		}
 		else if (type == GAMEPAD_TYPE::GAMEPAD_DUALSHOCK4)
 		{
-			result = Gamepad_Result{ 0, VIGEM_ERROR_NOT_SUPPORTED };
+			result = createDualShock4Gamepad(id);
 		}
 
 		// Check if the gamepad was created successfully
@@ -157,6 +157,10 @@ namespace gamepadapi
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
+
+	// *******
+	// DUAL SHOCK4
+	// *******
 
 	Gamepad_Result GamepadInputManager::ds4InputButton(int id, DS4_BUTTONS button, BUTTON_STATE state)
 	{
