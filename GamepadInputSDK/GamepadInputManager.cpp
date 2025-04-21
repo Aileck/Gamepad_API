@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GamepadInputManager.h"
 #include "Xbox.h"
+#include "DS4.h"
 #include "Gamepad.h"
 
 #include <iostream>
@@ -59,17 +60,17 @@ namespace gamepadapi
 			return Gamepad_Result{ 0, VIGEM_ERROR_NO_FREE_SLOT };
 		}
 
-		if (type == GAMEPAD_TYPE::GAMEPAD_XBOX)
+		if (type == GAMEPAD_TYPE::GAMEPAD_XBOX360)
 		{
-			result = createXboxGamepad(id);
+			result = createXbox360Gamepad(id);
 		}
-		else if (type == GAMEPAD_TYPE::GAMEPAD_PS4)
+		else if (type == GAMEPAD_TYPE::GAMEPAD_DUALSHOCK4)
 		{
 			result = Gamepad_Result{ 0, VIGEM_ERROR_NOT_SUPPORTED };
 		}
 
 		// Check if the gamepad was created successfully
-		if (result.STATUS == 1)
+		if (result.status == 1)
 		{
 			incrementSession();
 		}
@@ -77,7 +78,7 @@ namespace gamepadapi
 		return result;
 	}
 
-	Gamepad_Result GamepadInputManager::createXboxGamepad(int* id)
+	Gamepad_Result GamepadInputManager::createXbox360Gamepad(int* id)
 	{
 		PVIGEM_TARGET pad = vigem_target_x360_alloc();
 
@@ -87,23 +88,29 @@ namespace gamepadapi
 			return Gamepad_Result{ 0, VIGEM_ERROR_BUS_NOT_FOUND };
 		}
 
-		XINPUT_STATE state;
-		XInputGetState(0, &state);
-
-		vigem_target_x360_update(client, pad, *reinterpret_cast<XUSB_REPORT*>(&state.Gamepad));
-
-		ULONG index;
-		vigem_target_x360_get_user_index(client, pad, &index);
-		std::cout << "Virtual controller assigned to user index: " << index << std::endl;
-
-		gamepads[session] = std::make_shared<Xbox>(pad, index);
+		gamepads[session] = std::make_shared<Xbox>(pad);
 
 		*id = session;
-		std::cout << "Virtual controller assigned to user index: " << index << std::endl;
-
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
+	Gamepad_Result GamepadInputManager::createDualShock4Gamepad(int* id)
+	{
+		PVIGEM_TARGET pad = vigem_target_ds4_alloc();
+
+		const auto pir = vigem_target_add(client, pad);
+		if (!VIGEM_SUCCESS(pir)) {
+			std::cerr << "DS4 target plugin failed with error code: 0x" << std::hex << pir << std::endl;
+			return Gamepad_Result{ 0, VIGEM_ERROR_BUS_NOT_FOUND };
+		}
+
+		gamepads[session] = std::make_shared<DS4>(pad);
+
+		*id = session;
+		std::cout << "DS4 virtual controller assigned to session: " << session << std::endl;
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
 	Gamepad_Result gamepadapi::GamepadInputManager::cleanUp()
 	{
 		vigem_disconnect(client);
@@ -147,6 +154,56 @@ namespace gamepadapi
 		XUSB_REPORT report = xboxGamepad->HandleInputTrigger(direction, val);
 
 		vigem_target_x360_update(client, gamepads[id]->GetPadID(), report);
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result GamepadInputManager::ds4InputButton(int id, DS4_BUTTONS button, BUTTON_STATE state)
+	{
+		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
+		
+		DS4_REPORT report = ds4Gamepad->handleInputButton(button, state);
+		
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result GamepadInputManager::ds4InputSpecial(int id, DS4_SPECIAL_BUTTONS button, BUTTON_STATE state)
+	{
+		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
+		DS4_REPORT report = ds4Gamepad->handleInputSpecial(button, state);
+		
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result GamepadInputManager::ds4InputDpad(int id, _DS4_DPAD_DIRECTIONS button, BUTTON_STATE state)
+	{
+		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
+		DS4_REPORT report = ds4Gamepad->handleInputDpad(button, state);
+
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result GamepadInputManager::ds4InputStick(int id, DIRECTION direction, SHORT x, SHORT y)
+	{
+		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
+		DS4_REPORT report = ds4Gamepad->handleInputStick(direction, x, y);
+
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+
+		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+	}
+
+	Gamepad_Result GamepadInputManager::ds4InputTrigger(int id, DIRECTION direction, BYTE val)
+	{
+		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
+		DS4_REPORT report = ds4Gamepad->HandleInputTrigger(direction, val);
+
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}

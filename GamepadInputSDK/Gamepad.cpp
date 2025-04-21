@@ -2,7 +2,7 @@
 #include "Gamepad.h"
 
 namespace gamepadapi {
-    Gamepad::Gamepad(const std::string& name, PVIGEM_TARGET id, ULONG index) {
+    Gamepad::Gamepad(const std::string& name, PVIGEM_TARGET id) {
       if (name == "") {
         gamepadName = "Unknown Gamepad";
       }
@@ -11,7 +11,6 @@ namespace gamepadapi {
       }
 
       padID = id;
-      gamepadIndex = index;
     }
 
 	Gamepad::~Gamepad() = default;

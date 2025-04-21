@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DS4.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Gamepad.h" />
     <ClInclude Include="GamepadAPI.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="DS4.cpp" />
     <ClCompile Include="Gamepad.cpp" />
     <ClCompile Include="GamepadAPI.cpp" />
     <ClCompile Include="GamepadInputManager.cpp" />

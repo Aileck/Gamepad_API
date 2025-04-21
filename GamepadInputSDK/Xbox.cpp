@@ -5,9 +5,9 @@
 
 #include <string>
 
-gamepadapi::Xbox::Xbox(PVIGEM_TARGET id, ULONG index) : Gamepad("", id, index)
+gamepadapi::Xbox::Xbox(PVIGEM_TARGET id) : Gamepad("", id)
 {
-	ZeroMemory(&report, sizeof(report));
+	cleanInput();
 }
 
 gamepadapi::Xbox::~Xbox()
@@ -68,5 +68,5 @@ XUSB_REPORT gamepadapi::Xbox::HandleInputTrigger(DIRECTION direction, BYTE val)
 
 void gamepadapi::Xbox::cleanInput()
 {
-	ZeroMemory(&report, sizeof(report));
+	XUSB_REPORT_INIT(&report);
 }

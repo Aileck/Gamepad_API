@@ -10,13 +10,13 @@ namespace gamepadapi {
 
     class GAMEPAD_API Xbox : public Gamepad {
     public:
-        Xbox(PVIGEM_TARGET id, ULONG index);
+        Xbox(PVIGEM_TARGET id);
         ~Xbox();
 
         void create();
         void release();
 
-        XUSB_REPORT handleInputButton(_XUSB_BUTTON button, BUTTON_STATE state);
+        XUSB_REPORT handleInputButton(XUSB_BUTTON button, BUTTON_STATE state);
         XUSB_REPORT handleInputStick(DIRECTION direction, SHORT x, SHORT y);
         XUSB_REPORT HandleInputTrigger(DIRECTION direction, BYTE val);
 

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de encabezado\Gamepad">
+      <UniqueIdentifier>{c19c024f-1227-4d6d-9595-9e0b274ba899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Gamepad">
+      <UniqueIdentifier>{bba1ece4-c5a3-4107-8d3b-412913f9e62f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -27,13 +33,7 @@
     <ClInclude Include="GamepadResult.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Gamepad.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="globals.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Xbox.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="GamepadSharedAction.h">
@@ -41,6 +41,15 @@
     </ClInclude>
     <ClInclude Include="GamepadAPI.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="DS4.h">
+      <Filter>Archivos de encabezado\Gamepad</Filter>
+    </ClInclude>
+    <ClInclude Include="Gamepad.h">
+      <Filter>Archivos de encabezado\Gamepad</Filter>
+    </ClInclude>
+    <ClInclude Include="Xbox.h">
+      <Filter>Archivos de encabezado\Gamepad</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,14 +62,17 @@
     <ClCompile Include="GamepadInputManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Gamepad.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Xbox.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="GamepadAPI.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="DS4.cpp">
+      <Filter>Archivos de origen\Gamepad</Filter>
+    </ClCompile>
+    <ClCompile Include="Xbox.cpp">
+      <Filter>Archivos de origen\Gamepad</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamepad.cpp">
+      <Filter>Archivos de origen\Gamepad</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,8 +14,8 @@ namespace gamepadapi
     enum class DIRECTION;
 
     enum class GAMEPAD_TYPE {
-      GAMEPAD_XBOX,
-      GAMEPAD_PS4,
+      GAMEPAD_XBOX360,
+      GAMEPAD_DUALSHOCK4,
     };
 
     class GAMEPAD_API GamepadInputManager
@@ -33,13 +33,23 @@ namespace gamepadapi
 		Gamepad_Result xboxInputStick(int id, DIRECTION direction, SHORT x, SHORT y);
         Gamepad_Result xboxInputTrigger(int id, DIRECTION direction, BYTE val);
 
+		Gamepad_Result ds4InputButton(int id, DS4_BUTTONS button, BUTTON_STATE state);
+		Gamepad_Result ds4InputDpad(int id, _DS4_DPAD_DIRECTIONS button, BUTTON_STATE state);
+		Gamepad_Result ds4InputSpecial(int id, DS4_SPECIAL_BUTTONS button, BUTTON_STATE state);
+		Gamepad_Result ds4InputStick(int id, DIRECTION direction, SHORT x, SHORT y);
+		Gamepad_Result ds4InputTrigger(int id, DIRECTION direction, BYTE val);
+
     private:
         GamepadInputManager();
         ~GamepadInputManager();
+
+		// Prevent copying and assignment since this is a singleton
         GamepadInputManager(const GamepadInputManager&) = delete;
         GamepadInputManager& operator=(const GamepadInputManager&) = delete;
 
-        Gamepad_Result createXboxGamepad(int* id);
+        Gamepad_Result createXbox360Gamepad(int* id);
+        Gamepad_Result createDualShock4Gamepad(int* id);
+
         inline void incrementSession() { session++; }
         inline void resetSession() { session--; }
 
