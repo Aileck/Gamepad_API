@@ -131,7 +131,7 @@ Check the `status` field to determine if the operation was successful (non-zero)
 
 ## Language Bindings
 
-Check this file for a real ffi-binding example.
+Check this [project](https://github.com/Aileck/Gamepad-API-Testtool/blob/main/src/main/ffi.ts) for a real ffi-binding example.
 
 ## Known Issues
 
