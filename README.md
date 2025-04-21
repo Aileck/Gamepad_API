@@ -6,6 +6,11 @@ A FFI-friendly wrapper for ViGEm to enable cross-language virtual gamepad suppor
 
 GamepadAPI provides a simple C-style interface for creating and controlling virtual Xbox 360 and DualShock 4 controllers through the ViGEm framework. This wrapper makes it easy to integrate virtual gamepad functionality into applications written in any language that supports C FFI (Foreign Function Interface).
 
+### Usage
+- Within the solution directory of this project, there's a test subproject written in C++ that integrates this API for basic testing and validation purposes.
+
+- There is a standalone Electron application developed in TypeScript that also integrates this API: https://github.com/Aileck/Gamepad-API-Testtool
+
 ## Features
 
 - Easy-to-use API for creating virtual controllers
@@ -26,7 +31,7 @@ GamepadAPI provides a simple C-style interface for creating and controlling virt
 1. Install the ViGEmBus driver from the [official releases](https://github.com/ViGEm/ViGEmBus/releases)
 2. Include the GamepadAPI library in your project
 
-## Usage
+## Example
 
 ### Initialization
 
@@ -131,7 +136,7 @@ Check the `status` field to determine if the operation was successful (non-zero)
 
 ## Language Bindings
 
-Check this [project](https://github.com/Aileck/Gamepad-API-Testtool/blob/main/src/main/ffi.ts) for a real ffi-binding example.
+Check this [file](https://github.com/Aileck/Gamepad-API-Testtool/blob/main/src/main/ffi.ts) for a real ffi-binding example.
 
 ## Known Issues
 
