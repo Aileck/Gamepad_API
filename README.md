@@ -76,7 +76,7 @@ if (result.status != 0) {
     gamepadapi::ds4_input_cross(controllerId, true);
     
     // Move the right stick
-    gamepadapi::ds4_input_right_stick(controllerId, 0, -16384); // Half-up
+    gamepadapi::ds4_input_right_stick(controllerId, 0, -128); // Half-up
     
     // Press the L2 trigger halfway
     gamepadapi::ds4_input_l2(controllerId, 128);
