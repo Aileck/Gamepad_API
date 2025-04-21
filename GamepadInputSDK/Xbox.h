@@ -3,6 +3,7 @@
 
 #include "GamepadResult.h"
 #include <ViGEm/Client.h>
+#include <memory>
 
 namespace gamepadapi {
     enum class BUTTON_STATE;
@@ -16,14 +17,14 @@ namespace gamepadapi {
         void create();
         void release();
 
-        XUSB_REPORT handleInputButton(XUSB_BUTTON button, BUTTON_STATE state);
-        XUSB_REPORT handleInputStick(DIRECTION direction, SHORT x, SHORT y);
-        XUSB_REPORT HandleInputTrigger(DIRECTION direction, BYTE val);
+        PXUSB_REPORT handleInputButton(XUSB_BUTTON button, BUTTON_STATE state);
+        PXUSB_REPORT handleInputStick(DIRECTION direction, SHORT x, SHORT y);
+        PXUSB_REPORT HandleInputTrigger(DIRECTION direction, BYTE val);
 
       private:
         void cleanInput();
 
         // To save controller state for xbox
-        XUSB_REPORT report;
+        std::unique_ptr<XUSB_REPORT> report;
     };
 }; // namespace gamepadapi

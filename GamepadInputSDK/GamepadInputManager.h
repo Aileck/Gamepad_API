@@ -29,14 +29,14 @@ namespace gamepadapi
 
         Gamepad_Result cleanUp();
 
-        Gamepad_Result xboxInputButton(int id, _XUSB_BUTTON button, BUTTON_STATE state);
+        Gamepad_Result xboxInputButton(int id, XUSB_BUTTON button, BUTTON_STATE state);
 		Gamepad_Result xboxInputStick(int id, DIRECTION direction, SHORT x, SHORT y);
         Gamepad_Result xboxInputTrigger(int id, DIRECTION direction, BYTE val);
 
 		Gamepad_Result ds4InputButton(int id, DS4_BUTTONS button, BUTTON_STATE state);
-		Gamepad_Result ds4InputDpad(int id, _DS4_DPAD_DIRECTIONS button, BUTTON_STATE state);
+		Gamepad_Result ds4InputDpad(int id, DS4_DPAD_DIRECTIONS button, BUTTON_STATE state);
 		Gamepad_Result ds4InputSpecial(int id, DS4_SPECIAL_BUTTONS button, BUTTON_STATE state);
-		Gamepad_Result ds4InputStick(int id, DIRECTION direction, SHORT x, SHORT y);
+		Gamepad_Result ds4InputStick(int id, DIRECTION direction, BYTE x, BYTE y);
 		Gamepad_Result ds4InputTrigger(int id, DIRECTION direction, BYTE val);
 
     private:

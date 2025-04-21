@@ -113,6 +113,17 @@ namespace gamepadapi
 	}
 	Gamepad_Result gamepadapi::GamepadInputManager::cleanUp()
 	{
+		for (auto & gamepad : gamepads)
+		{
+			if (gamepad.second != nullptr)
+			{
+				vigem_target_remove(client, gamepad.second->GetPadID());
+				vigem_target_free(gamepad.second->GetPadID());
+			}
+		}
+
+		gamepads.clear();
+
 		vigem_disconnect(client);
 		vigem_free(client);
 
@@ -125,13 +136,13 @@ namespace gamepadapi
 	// XBOX
 	// *******
 
-	Gamepad_Result GamepadInputManager::xboxInputButton(int id, _XUSB_BUTTON button, BUTTON_STATE state)
+	Gamepad_Result GamepadInputManager::xboxInputButton(int id, XUSB_BUTTON button, BUTTON_STATE state)
 	{
 		std::shared_ptr<Xbox> xboxGamepad = std::static_pointer_cast<Xbox>(gamepads[id]);
 
-		XUSB_REPORT report = xboxGamepad->handleInputButton(button, state);
+		PXUSB_REPORT report = xboxGamepad->handleInputButton(button, state);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -140,9 +151,9 @@ namespace gamepadapi
 	{
 		std::shared_ptr<Xbox> xboxGamepad = std::static_pointer_cast<Xbox>(gamepads[id]);
 
-		XUSB_REPORT report = xboxGamepad->handleInputStick(direction, x, y);
+		PXUSB_REPORT report = xboxGamepad->handleInputStick(direction, x, y);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -151,9 +162,9 @@ namespace gamepadapi
 	{
 		std::shared_ptr<Xbox> xboxGamepad = std::static_pointer_cast<Xbox>(gamepads[id]);
 
-		XUSB_REPORT report = xboxGamepad->HandleInputTrigger(direction, val);
+		PXUSB_REPORT report = xboxGamepad->HandleInputTrigger(direction, val);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -166,9 +177,9 @@ namespace gamepadapi
 	{
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
 		
-		DS4_REPORT report = ds4Gamepad->handleInputButton(button, state);
+		PDS4_REPORT report = ds4Gamepad->handleInputButton(button, state);
 		
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -176,28 +187,28 @@ namespace gamepadapi
 	Gamepad_Result GamepadInputManager::ds4InputSpecial(int id, DS4_SPECIAL_BUTTONS button, BUTTON_STATE state)
 	{
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
-		DS4_REPORT report = ds4Gamepad->handleInputSpecial(button, state);
+		PDS4_REPORT report = ds4Gamepad->handleInputSpecial(button, state);
 		
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	Gamepad_Result GamepadInputManager::ds4InputDpad(int id, _DS4_DPAD_DIRECTIONS button, BUTTON_STATE state)
+	Gamepad_Result GamepadInputManager::ds4InputDpad(int id, DS4_DPAD_DIRECTIONS button, BUTTON_STATE state)
 	{
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
-		DS4_REPORT report = ds4Gamepad->handleInputDpad(button, state);
+		PDS4_REPORT report = ds4Gamepad->handleInputDpad(button, state);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
-	Gamepad_Result GamepadInputManager::ds4InputStick(int id, DIRECTION direction, SHORT x, SHORT y)
+	Gamepad_Result GamepadInputManager::ds4InputStick(int id, DIRECTION direction, BYTE x, BYTE y)
 	{
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
-		DS4_REPORT report = ds4Gamepad->handleInputStick(direction, x, y);
+		PDS4_REPORT report = ds4Gamepad->handleInputStick(direction, x, y);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -205,9 +216,9 @@ namespace gamepadapi
 	Gamepad_Result GamepadInputManager::ds4InputTrigger(int id, DIRECTION direction, BYTE val)
 	{
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
-		DS4_REPORT report = ds4Gamepad->HandleInputTrigger(direction, val);
+		PDS4_REPORT report = ds4Gamepad->HandleInputTrigger(direction, val);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), report);
+		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
