@@ -1,5 +1,6 @@
 #pragma once
 
 namespace gamepadapi {
-    constexpr int MAX_GAMEPADS = 8;
+    // To not overload the system
+    constexpr int MAX_GAMEPADS = 32;
 } 

@@ -9,7 +9,8 @@ extern "C" {
 #endif
 
 	GAMEPAD_API Gamepad_Result initialize();
-	GAMEPAD_API Gamepad_Result release();
+	GAMEPAD_API Gamepad_Result release_gamepad(int id);
+	GAMEPAD_API Gamepad_Result release_all();
 
 	// Xbox360
 	GAMEPAD_API Gamepad_Result create_xbox_controller(int& id);

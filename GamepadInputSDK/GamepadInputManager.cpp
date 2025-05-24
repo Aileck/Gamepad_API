@@ -21,15 +21,15 @@ namespace gamepadapi
 	GamepadInputManager::GamepadInputManager()
 	{
 		client = nullptr;
-		session = 0;
+		session = 1;
 	}
 
-	gamepadapi::GamepadInputManager::~GamepadInputManager()
+	GamepadInputManager::~GamepadInputManager()
 	{
 		cleanUp();
 	}
 
-	Gamepad_Result gamepadapi::GamepadInputManager::initializeManager()
+	Gamepad_Result GamepadInputManager::initializeManager()
 	{		
 		// Allocate a VIGEM client
 		client = vigem_alloc();
@@ -111,7 +111,7 @@ namespace gamepadapi
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
-	Gamepad_Result gamepadapi::GamepadInputManager::cleanUp()
+	Gamepad_Result GamepadInputManager::cleanUp()
 	{
 		for (auto & gamepad : gamepads)
 		{
@@ -132,6 +132,23 @@ namespace gamepadapi
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
+	Gamepad_Result GamepadInputManager::releaseGamepad(int id) {
+		std::shared_ptr<Gamepad> gemepad = gamepads[id];
+		
+		try 
+		{
+			vigem_target_remove(client, gemepad->GetPadID());
+			vigem_target_free(gemepad->GetPadID());
+
+			return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
+
+		}
+		catch (...) {
+			return Gamepad_Result{ 0, VIGEM_ERROR_BUS_NOT_FOUND };
+		}
+	}
+
+
 	// *******
 	// XBOX
 	// *******
@@ -142,7 +159,7 @@ namespace gamepadapi
 
 		PXUSB_REPORT report = xboxGamepad->handleInputButton(button, state);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_x360_update(client, xboxGamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -153,7 +170,7 @@ namespace gamepadapi
 
 		PXUSB_REPORT report = xboxGamepad->handleInputStick(direction, x, y);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_x360_update(client, xboxGamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -164,13 +181,13 @@ namespace gamepadapi
 
 		PXUSB_REPORT report = xboxGamepad->HandleInputTrigger(direction, val);
 
-		vigem_target_x360_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_x360_update(client, xboxGamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
 	// *******
-	// DUAL SHOCK4
+	// DUALSHOCK4
 	// *******
 
 	Gamepad_Result GamepadInputManager::ds4InputButton(int id, DS4_BUTTONS button, BUTTON_STATE state)
@@ -179,7 +196,7 @@ namespace gamepadapi
 		
 		PDS4_REPORT report = ds4Gamepad->handleInputButton(button, state);
 		
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_ds4_update(client, ds4Gamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -189,7 +206,7 @@ namespace gamepadapi
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
 		PDS4_REPORT report = ds4Gamepad->handleInputSpecial(button, state);
 		
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_ds4_update(client, ds4Gamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -199,7 +216,7 @@ namespace gamepadapi
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
 		PDS4_REPORT report = ds4Gamepad->handleInputDpad(button, state);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_ds4_update(client, ds4Gamepad->GetPadID(), *report);
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
 
@@ -208,7 +225,7 @@ namespace gamepadapi
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
 		PDS4_REPORT report = ds4Gamepad->handleInputStick(direction, x, y);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_ds4_update(client, ds4Gamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}
@@ -218,7 +235,7 @@ namespace gamepadapi
 		std::shared_ptr<DS4> ds4Gamepad = std::static_pointer_cast<DS4>(gamepads[id]);
 		PDS4_REPORT report = ds4Gamepad->HandleInputTrigger(direction, val);
 
-		vigem_target_ds4_update(client, gamepads[id]->GetPadID(), *report);
+		vigem_target_ds4_update(client, ds4Gamepad->GetPadID(), *report);
 
 		return Gamepad_Result{ 1, VIGEM_ERROR_NONE };
 	}

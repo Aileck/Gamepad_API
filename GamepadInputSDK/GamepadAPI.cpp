@@ -11,7 +11,12 @@ extern "C" {
 		return gamepadapi::GamepadInputManager::getInstance().initializeManager();
 	}
 
-	GAMEPAD_API Gamepad_Result gamepadapi::release()
+	GAMEPAD_API Gamepad_Result gamepadapi::release_gamepad(int id)
+	{
+		return gamepadapi::GamepadInputManager::getInstance().releaseGamepad(id);
+	}
+
+	GAMEPAD_API Gamepad_Result gamepadapi::release_all()
 	{
 		return gamepadapi::GamepadInputManager::getInstance().cleanUp();
 	}

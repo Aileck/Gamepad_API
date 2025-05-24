@@ -25,7 +25,7 @@ void showControlHelp() {
     std::cout << "  I - Left Trigger (half)" << std::endl;
     std::cout << "  O - Analog stick (Up-Left)" << std::endl;
     std::cout << "DualShock 4 Button Mapping:" << std::endl;
-    std::cout << "  A - D-pad Up-Left" << std::endl;
+    std::cout << "  A - D-pad Up" << std::endl;
     std::cout << "  S - D-pad Up-Right" << std::endl;
     std::cout << "  D - D-pad Down-Left" << std::endl;
     std::cout << "  F - D-pad Down-Right" << std::endl;
@@ -134,8 +134,8 @@ int main() {
 
                 // DualShock 4 controller mappings
             case 'a': // D-pad Up-Left
-                std::cout << (keydown ? "Pressed: DS4 D-pad Up-Left" : "Released: DS4 D-pad Up-Left") << std::endl;
-                gamepadapi::ds4_input_up_left(ds4Id, keydown);
+                std::cout << (keydown ? "Pressed: DS4 D-pad Up" : "Released: DS4 D-pad Up") << std::endl;
+                gamepadapi::ds4_input_up(ds4Id, keydown);
                 break;
             case 's': // D-pad Up-Right
                 std::cout << (keydown ? "Pressed: DS4 D-pad Up-Right" : "Released: DS4 D-pad Up-Right") << std::endl;

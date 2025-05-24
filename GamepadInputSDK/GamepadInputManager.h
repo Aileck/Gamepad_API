@@ -26,6 +26,7 @@ namespace gamepadapi
 
         Gamepad_Result initializeManager();
         Gamepad_Result createGamepad(int *id, GAMEPAD_TYPE type);
+        Gamepad_Result releaseGamepad(int id);
 
         Gamepad_Result cleanUp();
 
